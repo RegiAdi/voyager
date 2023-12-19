@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import {Server} from './server';
 
 export class Kernel {
