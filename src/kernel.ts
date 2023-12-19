@@ -1,26 +1,16 @@
 import * as express from 'express';
 import 'dotenv/config';
 
+import {Server} from './server';
+
 export class Kernel {
-  public app: express.Express;
-
-  constructor() {
-    this.app = express();
-  }
-
-  private listen() {
-    const port = process.env.APP_PORT || 3000;
-
-    this.app.listen(port, () => {
-      console.log(`[server]: Server is running at http://localhost:${port}`);
-    });
-  }
+  constructor(private server: Server) {}
 
   boot() {
-    this.app.get('/', (req: express.Request, res: express.Response) => {
+    this.server.app.get('/', (req: express.Request, res: express.Response) => {
       res.send('Voyager');
     });
 
-    this.listen();
+    this.server.listen();
   }
 }
