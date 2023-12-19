@@ -8,7 +8,7 @@ export class Kernel {
     this.app = express();
   }
 
-  listen() {
+  private listen() {
     const port = process.env.APP_PORT || 3000;
 
     this.app.listen(port, () => {
@@ -18,7 +18,7 @@ export class Kernel {
 
   boot() {
     this.app.get('/', (req: express.Request, res: express.Response) => {
-      res.send('Express + TypeScript Server');
+      res.send('Voyager');
     });
 
     this.listen();
