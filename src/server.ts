@@ -1,14 +1,15 @@
 import * as express from 'express';
+import {Config} from './config';
 
 export class Server {
   app: express.Express;
 
-  constructor() {
+  constructor(private config: Config) {
     this.app = express();
   }
 
   listen() {
-    const port = process.env.APP_PORT || 3000;
+    const port = this.config.getAppPort();
 
     this.app.get('/', (req: express.Request, res: express.Response) => {
       res.send('Voyager');
