@@ -1,5 +1,8 @@
 import * as express from 'express';
-import {Config} from './config';
+
+interface Config {
+  getAppPort(): string;
+}
 
 export class Server {
   app: express.Express;
