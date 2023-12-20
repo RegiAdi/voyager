@@ -3,7 +3,7 @@ import {Server} from './server';
 import {Config} from './config';
 
 const config = new Config();
-const server = new Server(config);
-const kernel = new Kernel(server);
+const server = new Server();
+const kernel = new Kernel(config, server);
 
 kernel.boot();
