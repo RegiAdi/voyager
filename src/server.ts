@@ -5,20 +5,28 @@ interface Config {
 }
 
 export class Server {
-  app: express.Express;
+  private httpServer: express.Express;
+  router: express.Router;
 
   constructor(private config: Config) {
-    this.app = express();
+    this.httpServer = express();
+    this.router = express.Router();
   }
 
   listen(): void {
     const port = this.config.getAppPort();
 
-    this.app.get('/', (req: express.Request, res: express.Response) => {
+    this.httpServer.get('/', (req: express.Request, res: express.Response) => {
       res.send('Voyager');
     });
 
-    this.app.listen(port, () => {
+    this.router.get('/me', (req: express.Request, res: express.Response) => {
+      res.send('Voyager /me');
+    });
+
+    this.httpServer.use('/users', this.router);
+
+    this.httpServer.listen(port, () => {
       console.log(`[server]: Server is running at http://localhost:${port}`);
     });
   }
