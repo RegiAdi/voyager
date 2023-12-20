@@ -8,7 +8,7 @@ export class Server {
     this.app = express();
   }
 
-  listen() {
+  listen(): void {
     const port = this.config.getAppPort();
 
     this.app.get('/', (req: express.Request, res: express.Response) => {
