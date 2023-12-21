@@ -4,7 +4,7 @@ import {BaseResponse} from './base_response';
 export class UserHandler {
   constructor() {}
 
-  getOneUser(req: Request, res: Response) {
+  getOneUser(req: Request, res: Response): void {
     console.log('GET /users/1');
 
     const baseResponse = new BaseResponse();
