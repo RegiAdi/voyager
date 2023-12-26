@@ -22,17 +22,17 @@ export class Kernel {
   ) {}
 
   boot() {
-    this.server.http.get('/', (req: Request, res: Response) => {
+    this.server.router.get('/', (req: Request, res: Response) => {
       res.send('Voyager /');
       console.log('GET /');
     });
 
-    this.server.http.get('/me', (req: Request, res: Response) => {
+    this.server.router.get('/me', (req: Request, res: Response) => {
       res.send('Voyager /me');
       console.log('GET /me');
     });
 
-    this.server.http.get('/users/1', this.userHandler.getOneUser);
+    this.server.router.get('/users/1', this.userHandler.getOneUser);
 
     this.server.http.use(this.server.router);
 
