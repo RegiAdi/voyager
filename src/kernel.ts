@@ -10,6 +10,12 @@ interface Server {
   listen(port: string): void;
 }
 
+interface Database {
+  name: string;
+  uri: string;
+  connect(): Promise<void>;
+}
+
 interface UserHandler {
   getOneUser(req: Request, res: Response): void;
 }
@@ -18,10 +24,13 @@ export class Kernel {
   constructor(
     private config: Config,
     private server: Server,
+    private db: Database,
     private userHandler: UserHandler
   ) {}
 
   boot() {
+    this.db.connect();
+
     this.server.router.get('/', (req: Request, res: Response) => {
       res.send('Voyager /');
       console.log('GET /');
