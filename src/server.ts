@@ -2,11 +2,13 @@ import * as express from 'express';
 
 export class Server {
   http: express.Express;
-  router: express.Router;
+  guestRouter: express.Router;
+  authRouter: express.Router;
 
   constructor() {
     this.http = express();
-    this.router = express.Router();
+    this.guestRouter = express.Router();
+    this.authRouter = express.Router();
   }
 
   listen(port: string): void {

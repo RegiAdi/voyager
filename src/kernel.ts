@@ -1,4 +1,4 @@
-import {Express, Request, Response, Router} from 'express';
+import {Express, Request, Response, NextFunction, Router} from 'express';
 
 interface Config {
   getAppPort(): string;
@@ -6,7 +6,8 @@ interface Config {
 
 interface Server {
   http: Express;
-  router: Router;
+  guestRouter: Router;
+  authRouter: Router;
   listen(port: string): void;
 }
 
@@ -31,19 +32,34 @@ export class Kernel {
   boot() {
     this.db.connect();
 
-    this.server.router.get('/', (req: Request, res: Response) => {
+    this.server.guestRouter.use(
+      (req: Request, res: Response, next: NextFunction) => {
+        console.log('Guest');
+        next();
+      }
+    );
+
+    this.server.guestRouter.get('/', (req: Request, res: Response) => {
       res.send('Voyager /');
       console.log('GET /');
     });
 
-    this.server.router.get('/me', (req: Request, res: Response) => {
+    this.server.authRouter.use(
+      (req: Request, res: Response, next: NextFunction) => {
+        console.log('Authenticated');
+        next();
+      }
+    );
+
+    this.server.authRouter.get('/me', (req: Request, res: Response) => {
       res.send('Voyager /me');
       console.log('GET /me');
     });
 
-    this.server.router.get('/users/1', this.userHandler.getOneUser);
+    this.server.authRouter.get('/users/1', this.userHandler.getOneUser);
 
-    this.server.http.use(this.server.router);
+    this.server.http.use(this.server.guestRouter);
+    this.server.http.use(this.server.authRouter);
 
     this.server.listen(this.config.getAppPort());
   }
