@@ -1,8 +1,9 @@
-interface User {
-  usercode: string;
-  username: string;
-  password: string;
+import {ObjectId} from 'mongodb';
+
+export interface User {
+  id?: ObjectId;
   email: string;
+  password: string;
   fullname: string;
   phone: string;
   address: string;
