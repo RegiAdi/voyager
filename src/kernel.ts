@@ -12,8 +12,6 @@ interface Server {
 }
 
 interface Database {
-  name: string;
-  uri: string;
   connect(): Promise<void>;
 }
 
@@ -41,7 +39,6 @@ export class Kernel {
 
     this.server.guestRouter.post('/register', this.authHandler.register);
     this.server.guestRouter.post('/login', this.authHandler.login);
-    this.server.authRouter.get('/logout', this.authHandler.logout);
 
     this.server.guestRouter.use(
       (req: Request, res: Response, next: NextFunction) => {
@@ -54,6 +51,8 @@ export class Kernel {
       res.send('Voyager /');
       console.log('GET /');
     });
+
+    this.server.authRouter.get('/logout', this.authHandler.logout);
 
     this.server.authRouter.use(
       (req: Request, res: Response, next: NextFunction) => {

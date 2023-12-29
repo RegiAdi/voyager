@@ -1,4 +1,5 @@
-import * as mongoDb from 'mongodb';
+import * as MongoDB from 'mongodb';
+import {User} from './models/user';
 
 interface Config {
   getMongoUri(): string;
@@ -6,21 +7,27 @@ interface Config {
 }
 
 export class Database {
-  name: string;
-  uri: string;
+  private name: string;
+  private uri: string;
+  private db: MongoDB.Db;
+  private client: null | MongoDB.MongoClient;
 
   constructor(private config: Config) {
     this.name = this.config.getMongoDbName();
     this.uri = this.config.getMongoUri();
+    this.client = new MongoDB.MongoClient(this.uri);
+    this.db = this.client.db(this.name);
   }
 
   async connect(): Promise<void> {
-    const mongoClient: mongoDb.MongoClient = new mongoDb.MongoClient(this.uri);
+    await this.client?.connect();
 
-    await mongoClient.connect();
+    console.log(`Successfully connected to database: ${this.db.databaseName}`);
+  }
 
-    const db: mongoDb.Db = mongoClient.db(this.name);
-
-    console.log(`Successfully connected to database: ${db.databaseName}`);
+  getCollection<T extends MongoDB.BSON.Document = MongoDB.BSON.Document>(
+    collectionName: string
+  ): MongoDB.Collection<T> {
+    return this.db?.collection<T>(collectionName);
   }
 }
