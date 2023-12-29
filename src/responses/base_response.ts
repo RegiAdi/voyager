@@ -6,7 +6,7 @@ export class BaseResponse {
     statusCode: number,
     status: string,
     message: string,
-    data: object | Array<object>
+    data: null | object | Array<object>
   ): Promise<void> {
     res.status(statusCode).json({
       status: status,

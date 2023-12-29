@@ -1,7 +1,7 @@
 import {Request, Response} from 'express';
 import {BaseResponse} from '../responses/base_response';
 
-export class UserHandler extends BaseResponse {
+export class UserHandler {
   async getOneUser(req: Request, res: Response): Promise<void> {
     console.log('GET /users/1');
 

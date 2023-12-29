@@ -17,8 +17,14 @@ interface Database {
   connect(): Promise<void>;
 }
 
+interface AuthHandler {
+  register(req: Request, res: Response): Promise<void>;
+  login(req: Request, res: Response): Promise<void>;
+  logout(req: Request, res: Response): Promise<void>;
+}
+
 interface UserHandler {
-  getOneUser(req: Request, res: Response): void;
+  getOneUser(req: Request, res: Response): Promise<void>;
 }
 
 export class Kernel {
@@ -26,11 +32,16 @@ export class Kernel {
     private config: Config,
     private server: Server,
     private db: Database,
+    private authHandler: AuthHandler,
     private userHandler: UserHandler
   ) {}
 
   boot() {
     this.db.connect();
+
+    this.server.guestRouter.post('/register', this.authHandler.register);
+    this.server.guestRouter.post('/login', this.authHandler.login);
+    this.server.authRouter.get('/logout', this.authHandler.logout);
 
     this.server.guestRouter.use(
       (req: Request, res: Response, next: NextFunction) => {
