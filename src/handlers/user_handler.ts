@@ -1,8 +1,8 @@
 import {Request, Response} from 'express';
-import {BaseResponse} from './base_response';
+import {BaseResponse} from '../responses/base_response';
 
-export class UserHandler {
-  getOneUser(req: Request, res: Response): void {
+export class UserHandler extends BaseResponse {
+  async getOneUser(req: Request, res: Response): Promise<void> {
     console.log('GET /users/1');
 
     const baseResponse = new BaseResponse();

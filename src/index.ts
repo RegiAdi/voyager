@@ -3,7 +3,7 @@ import {Server} from './server';
 import {Database} from './database';
 import {Password} from './password';
 import {Config} from './config';
-import {UserHandler} from './user_handler';
+import {UserHandler} from './handlers/user_handler';
 
 const config = new Config();
 const server = new Server();
