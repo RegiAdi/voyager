@@ -1,12 +1,13 @@
 import {Request, Response} from 'express';
-import {BaseResponse} from '../responses/base_response';
+import {BaseHandler} from './base_handler';
 
-export class UserHandler {
+export class UserHandler extends BaseHandler {
+  constructor() {
+    super();
+  }
+
   async getOneUser(req: Request, res: Response): Promise<void> {
-    console.log('GET /users/1');
-
-    const baseResponse = new BaseResponse();
-    baseResponse.send(res, 200, 'SUCCESS', 'User retrieved sucessfully', {
+    this.send(res, 200, 'SUCCESS', 'User retrieved sucessfully', {
       id: 1,
       name: 'user1',
     });
