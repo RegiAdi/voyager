@@ -11,6 +11,14 @@ export class Server {
     this.authRouter = express.Router();
   }
 
+  mountGlobalMiddleware(): void {
+    // for parsing application/json
+    this.http.use(express.json());
+
+    // for parsing application/x-www-form-urlencoded
+    this.http.use(express.urlencoded({extended: true}));
+  }
+
   listen(port: string): void {
     this.http.listen(port, () => {
       console.log(`[server]: Server is running at http://localhost:${port}`);

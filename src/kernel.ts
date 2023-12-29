@@ -8,6 +8,7 @@ interface Server {
   http: Express;
   guestRouter: Router;
   authRouter: Router;
+  mountGlobalMiddleware(): void;
   listen(port: string): void;
 }
 
@@ -37,7 +38,11 @@ export class Kernel {
   boot() {
     this.db.connect();
 
-    this.server.guestRouter.post('/register', this.authHandler.register);
+    this.server.mountGlobalMiddleware();
+
+    this.server.guestRouter.post('/register', (req: Request, res: Response) => {
+      this.authHandler.register(req, res);
+    });
     this.server.guestRouter.post('/login', this.authHandler.login);
 
     this.server.guestRouter.use(

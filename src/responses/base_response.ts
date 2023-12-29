@@ -1,13 +1,13 @@
 import {Response} from 'express';
 
 export class BaseResponse {
-  async send(
+  send(
     res: Response,
     statusCode: number,
     status: string,
     message: string,
     data: null | object | Array<object>
-  ): Promise<void> {
+  ): void {
     res.status(statusCode).json({
       status: status,
       message: message,

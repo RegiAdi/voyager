@@ -20,6 +20,10 @@ export class UserRepository {
 
       return result.insertedId?.toString();
     } catch (error) {
+      if (error instanceof MongoDB.WriteError) {
+        console.log(error.errmsg);
+      }
+
       throw new Error('Failed to create a new user');
     }
   }
