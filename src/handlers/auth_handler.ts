@@ -1,13 +1,15 @@
 import {Request, Response} from 'express';
-import {BaseResponse} from '../responses/base_response';
 import {User} from '../models/user';
+import {BaseHandler} from './base_handler';
 
 interface AuthService {
   register(user: User): Promise<string>;
 }
 
-export class AuthHandler {
-  constructor(private authService: AuthService) {}
+export class AuthHandler extends BaseHandler {
+  constructor(private authService: AuthService) {
+    super();
+  }
 
   async register(req: Request, res: Response): Promise<void> {
     try {
@@ -15,8 +17,7 @@ export class AuthHandler {
         email: req.body.email,
       });
 
-      const baseResponse = new BaseResponse();
-      baseResponse.send(res, 201, 'SUCCESS', 'User created sucessfully', {
+      this.send(res, 201, 'SUCCESS', 'User created sucessfully', {
         id: userId,
       });
     } catch (error) {
@@ -24,21 +25,18 @@ export class AuthHandler {
         console.log(error.message);
       }
 
-      const baseResponse = new BaseResponse();
-      baseResponse.send(res, 500, 'FAIL', 'Failed to create user', null);
+      this.send(res, 500, 'FAIL', 'Failed to create user', null);
     }
   }
 
   async login(req: Request, res: Response): Promise<void> {
-    const baseResponse = new BaseResponse();
-    baseResponse.send(res, 201, 'SUCCESS', 'User authenticated sucessfully', {
+    this.send(res, 201, 'SUCCESS', 'User authenticated sucessfully', {
       id: 1,
       email: 'user@demo.com',
     });
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    const baseResponse = new BaseResponse();
-    baseResponse.send(res, 201, 'SUCCESS', 'User logged out sucessfully', null);
+    this.send(res, 201, 'SUCCESS', 'User logged out sucessfully', null);
   }
 }
