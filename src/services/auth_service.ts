@@ -19,7 +19,7 @@ export class AuthService {
 
     let userId: string;
 
-    if (userCount) {
+    if (!userCount) {
       try {
         userId = await this.userRepository.create(user);
 
