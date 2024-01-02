@@ -16,8 +16,10 @@ export class Password {
   async hash(password: string): Promise<string> {
     const userPassword = Buffer.from(password);
     const hash = await this.securePassword.hash(userPassword);
+    console.log(SecurePassword.PASSWORD_BYTES_MAX);
+    console.log(hash.toString());
 
-    return hash.toString();
+    return this.bufferToString(hash);
   }
 
   async verify(
@@ -59,5 +61,9 @@ export class Password {
         }
         return 'VALID_NEEDS_REHASH';
     }
+  }
+
+  private bufferToString(password: Buffer) {
+    return password.toString('utf8').replace(/\0/g, '');
   }
 }

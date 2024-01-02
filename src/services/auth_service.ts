@@ -5,8 +5,15 @@ interface UserRepository {
   count(user: User): Promise<number>;
 }
 
+interface Password {
+  hash(password: string | undefined): Promise<string>;
+}
+
 export class AuthService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private password: Password
+  ) {}
 
   async register(user: User): Promise<User> {
     let userCount: number;
@@ -15,10 +22,14 @@ export class AuthService {
       userCount = await this.userRepository.count(user);
 
       if (!userCount) {
+        const hashedPassword = await this.password.hash(user.password);
+        user.password = hashedPassword;
+
         const userId = await this.userRepository.create(user);
 
         return {
           id: userId,
+          password: user.password,
         };
       } else {
         throw new Error('Email already exist.');

@@ -17,7 +17,7 @@ const password = new Password();
 
 const userRepository = new UserRepository(db);
 
-const authService = new AuthService(userRepository);
+const authService = new AuthService(userRepository, password);
 
 const authHandler = new AuthHandler(authService);
 const userHandler = new UserHandler();
