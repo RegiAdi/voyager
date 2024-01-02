@@ -27,4 +27,14 @@ export class UserRepository {
       throw new Error('Failed to create a new user');
     }
   }
+
+  async count(user: User): Promise<number> {
+    try {
+      const result = await this.collection.countDocuments({email: user.email});
+
+      return result;
+    } catch (error) {
+      throw new Error('Failed to get user count');
+    }
+  }
 }

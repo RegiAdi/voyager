@@ -3,7 +3,7 @@ import {User} from '../models/user';
 import {BaseHandler} from './base_handler';
 
 interface AuthService {
-  register(user: User): Promise<string>;
+  register(user: User): Promise<User>;
 }
 
 export class AuthHandler extends BaseHandler {
@@ -12,21 +12,43 @@ export class AuthHandler extends BaseHandler {
   }
 
   async register(req: Request, res: Response): Promise<void> {
-    try {
-      const userId = await this.authService.register({
-        email: req.body.email,
-      });
+    const request = req.body;
+    let response = {
+      statusCode: 500,
+      status: 'failed',
+      message: '',
+      data: {},
+    };
 
-      this.send(res, 201, 'SUCCESS', 'User created sucessfully', {
-        id: userId,
-      });
+    try {
+      const user = await this.authService.register(request);
+
+      response = {
+        statusCode: 201,
+        status: 'success',
+        message: 'User created sucessfully',
+        data: user,
+      };
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error.message);
+        console.error('An error occured: ', error.message);
       }
 
-      this.send(res, 500, 'FAIL', 'Failed to create user', null);
+      response = {
+        statusCode: 500,
+        status: 'error',
+        message: 'Failed to create user',
+        data: {},
+      };
     }
+
+    this.send(
+      res,
+      response.statusCode,
+      response.status,
+      response.message,
+      response.data
+    );
   }
 
   async login(req: Request, res: Response): Promise<void> {
