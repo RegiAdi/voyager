@@ -15,8 +15,8 @@ export class AuthHandler extends BaseHandler {
     const request = req.body;
     let response = {
       statusCode: 500,
-      status: 'failed',
-      message: '',
+      status: 'error',
+      message: 'An error occured',
       data: {},
     };
 
@@ -30,16 +30,16 @@ export class AuthHandler extends BaseHandler {
         data: user,
       };
     } catch (error) {
-      if (error instanceof Error) {
-        console.error('An error occured: ', error.message);
-      }
+      console.error(error);
 
-      response = {
-        statusCode: 500,
-        status: 'error',
-        message: 'Failed to create user',
-        data: {},
-      };
+      if (error instanceof Error) {
+        response = {
+          statusCode: 500,
+          status: 'error',
+          message: error.message,
+          data: {},
+        };
+      }
     }
 
     this.send(

@@ -20,9 +20,7 @@ export class UserRepository {
 
       return result.insertedId?.toString();
     } catch (error) {
-      if (error instanceof MongoDB.WriteError) {
-        console.log(error.errmsg);
-      }
+      console.error(error);
 
       throw new Error('Failed to create a new user');
     }
@@ -34,6 +32,8 @@ export class UserRepository {
 
       return result;
     } catch (error) {
+      console.error(error);
+
       throw new Error('Failed to get user count');
     }
   }

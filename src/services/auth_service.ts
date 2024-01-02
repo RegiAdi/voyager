@@ -13,24 +13,24 @@ export class AuthService {
 
     try {
       userCount = await this.userRepository.count(user);
-    } catch (error) {
-      throw new Error('Failed to create a new user');
-    }
 
-    let userId: string;
-
-    if (!userCount) {
-      try {
-        userId = await this.userRepository.create(user);
+      if (!userCount) {
+        const userId = await this.userRepository.create(user);
 
         return {
           id: userId,
         };
-      } catch (error) {
+      } else {
+        throw new Error('Email already exist.');
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        throw new Error(`${error.message}`);
+      } else {
         throw new Error('Failed to create a new user');
       }
-    } else {
-      throw new Error('Email already exist');
     }
   }
 }
