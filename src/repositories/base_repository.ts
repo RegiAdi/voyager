@@ -4,10 +4,17 @@ export interface Database {
   db: MongoDB.Db;
 }
 
-export abstract class BaseRepository {
-  protected abstract collection: MongoDB.Collection;
+export abstract class BaseRepository<
+  T extends MongoDB.BSON.Document = MongoDB.BSON.Document,
+> {
+  protected collection: MongoDB.Collection<T>;
 
-  constructor(protected db: Database) {}
+  constructor(
+    protected db: Database,
+    protected collectionName: string
+  ) {
+    this.collection = this.getCollection<T>('collectionName');
+  }
 
   getCollection<T extends MongoDB.BSON.Document = MongoDB.BSON.Document>(
     collectionName: string
