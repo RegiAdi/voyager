@@ -9,8 +9,8 @@ interface Config {
 export class Database {
   private name: string;
   private uri: string;
-  private db: MongoDB.Db;
-  private client: null | MongoDB.MongoClient;
+  db: MongoDB.Db;
+  client: null | MongoDB.MongoClient;
 
   constructor(private config: Config) {
     this.name = this.config.getMongoDbName();
@@ -25,9 +25,9 @@ export class Database {
     console.log(`Successfully connected to database: ${this.db.databaseName}`);
   }
 
-  getCollection<T extends MongoDB.BSON.Document = MongoDB.BSON.Document>(
-    collectionName: string
-  ): MongoDB.Collection<T> {
-    return this.db?.collection<T>(collectionName);
-  }
+  // getCollection<T extends MongoDB.BSON.Document = MongoDB.BSON.Document>(
+  //   collectionName: string
+  // ): MongoDB.Collection<T> {
+  //   return this.db?.collection<T>(collectionName);
+  // }
 }

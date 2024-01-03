@@ -16,8 +16,6 @@ export class Password {
   async hash(password: string): Promise<string> {
     const userPassword = Buffer.from(password);
     const hash = await this.securePassword.hash(userPassword);
-    console.log(SecurePassword.PASSWORD_BYTES_MAX);
-    console.log(hash.toString());
 
     return this.bufferToString(hash);
   }
