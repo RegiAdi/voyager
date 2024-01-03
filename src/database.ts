@@ -1,5 +1,4 @@
 import * as MongoDB from 'mongodb';
-import {User} from './models/user';
 
 interface Config {
   getMongoUri(): string;
@@ -24,10 +23,4 @@ export class Database {
 
     console.log(`Successfully connected to database: ${this.db.databaseName}`);
   }
-
-  // getCollection<T extends MongoDB.BSON.Document = MongoDB.BSON.Document>(
-  //   collectionName: string
-  // ): MongoDB.Collection<T> {
-  //   return this.db?.collection<T>(collectionName);
-  // }
 }
