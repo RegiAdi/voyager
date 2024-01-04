@@ -7,8 +7,8 @@ export interface User {
   address?: string;
   apiToken?: string;
   deviceName?: string;
-  tokenLastUsedAt?: string;
-  tokenExpiresAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  tokenLastUsedAt?: Date;
+  tokenExpiresAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

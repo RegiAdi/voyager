@@ -25,8 +25,8 @@ export class AuthService {
         const hashedPassword = await this.password.hash(user.password);
 
         user.password = hashedPassword;
-        user.createdAt = new Date().toISOString();
-        user.updatedAt = new Date().toISOString();
+        user.createdAt = new Date();
+        user.updatedAt = new Date();
 
         const userId = await this.userRepository.create(user);
 
