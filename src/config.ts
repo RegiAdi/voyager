@@ -12,4 +12,8 @@ export class Config {
   getMongoDbName(): string {
     return process.env.MONGO_DB_NAME || 'voyager';
   }
+
+  getBaseUrlPath(): string {
+    return '/api/v1';
+  }
 }

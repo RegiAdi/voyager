@@ -2,6 +2,7 @@ import {Express, Request, Response, NextFunction, Router} from 'express';
 
 interface Config {
   getAppPort(): string;
+  getBaseUrlPath(): string;
 }
 
 interface Server {
@@ -66,8 +67,8 @@ export class Kernel {
       }
     );
 
-    this.server.http.use(this.server.guestRouter);
-    this.server.http.use(this.server.authRouter);
+    this.server.http.use(this.config.getBaseUrlPath(), this.server.guestRouter);
+    this.server.http.use(this.config.getBaseUrlPath(), this.server.authRouter);
 
     this.server.listen(this.config.getAppPort());
   }
