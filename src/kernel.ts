@@ -55,11 +55,6 @@ export class Kernel {
       }
     );
 
-    this.server.guestRouter.get('/', (req: Request, res: Response) => {
-      res.send('Voyager /');
-      console.log('GET /');
-    });
-
     this.server.authRouter.get('/logout', (req: Request, res: Response) => {
       this.authHandler.logout(req, res);
     });
@@ -70,15 +65,6 @@ export class Kernel {
         next();
       }
     );
-
-    this.server.authRouter.get('/me', (req: Request, res: Response) => {
-      res.send('Voyager /me');
-      console.log('GET /me');
-    });
-
-    this.server.authRouter.get('/users/1', (req: Request, res: Response) => {
-      this.userHandler.getOneUser(req, res);
-    });
 
     this.server.http.use(this.server.guestRouter);
     this.server.http.use(this.server.authRouter);
