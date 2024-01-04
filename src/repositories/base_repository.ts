@@ -13,7 +13,7 @@ export abstract class BaseRepository<
     protected db: Database,
     protected collectionName: string
   ) {
-    this.collection = this.getCollection<T>('collectionName');
+    this.collection = this.getCollection<T>(collectionName);
   }
 
   getCollection<T extends MongoDB.BSON.Document = MongoDB.BSON.Document>(
