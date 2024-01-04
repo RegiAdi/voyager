@@ -7,9 +7,16 @@ export class UserHandler extends BaseHandler {
   }
 
   async getOneUser(req: Request, res: Response): Promise<void> {
-    this.send(res, 200, 'SUCCESS', 'User retrieved sucessfully', {
-      id: 1,
-      name: 'user1',
-    });
+    this.payload = {
+      statusCode: 200,
+      status: 'success',
+      message: 'User retrieved sucessfully',
+      data: {
+        id: 1,
+        name: 'user1',
+      },
+    };
+
+    this.send(res, this.payload);
   }
 }

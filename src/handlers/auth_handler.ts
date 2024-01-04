@@ -13,17 +13,11 @@ export class AuthHandler extends BaseHandler {
 
   async register(req: Request, res: Response): Promise<void> {
     const request = req.body;
-    let response = {
-      statusCode: 500,
-      status: 'error',
-      message: 'An error occured',
-      data: {},
-    };
 
     try {
       const user = await this.authService.register(request);
 
-      response = {
+      this.payload = {
         statusCode: 201,
         status: 'success',
         message: 'User created sucessfully',
@@ -33,7 +27,7 @@ export class AuthHandler extends BaseHandler {
       console.error(error);
 
       if (error instanceof Error) {
-        response = {
+        this.payload = {
           statusCode: 500,
           status: 'error',
           message: error.message,
@@ -42,23 +36,31 @@ export class AuthHandler extends BaseHandler {
       }
     }
 
-    this.send(
-      res,
-      response.statusCode,
-      response.status,
-      response.message,
-      response.data
-    );
+    this.send(res, this.payload);
   }
 
   async login(req: Request, res: Response): Promise<void> {
-    this.send(res, 201, 'SUCCESS', 'User authenticated sucessfully', {
-      id: 1,
-      email: 'user@demo.com',
-    });
+    this.payload = {
+      statusCode: 200,
+      status: 'success',
+      message: 'User authenticated sucessfully',
+      data: {
+        id: 1,
+        email: 'user@demo.com',
+      },
+    };
+
+    this.send(res, this.payload);
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    this.send(res, 201, 'SUCCESS', 'User logged out sucessfully', null);
+    this.payload = {
+      statusCode: 200,
+      status: 'success',
+      message: 'User logged out sucessfully',
+      data: null,
+    };
+
+    this.send(res, this.payload);
   }
 }
