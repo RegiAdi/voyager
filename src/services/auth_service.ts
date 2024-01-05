@@ -73,6 +73,8 @@ export class AuthService {
         user.updatedAt = new Date();
 
         await this.userRepository.create(user);
+
+        return registeredUser!;
       } else {
         throw new Error("Email and Password didn't match");
       }
