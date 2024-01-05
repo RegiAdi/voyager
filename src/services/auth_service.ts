@@ -66,6 +66,13 @@ export class AuthService {
 
       if (passwordStatus === 'VALID') {
         return registeredUser!;
+      } else if (passwordStatus === 'VALID_NEEDS_REHASH') {
+        const improvedHash = await this.password.hash(user.password);
+
+        user.password = improvedHash;
+        user.updatedAt = new Date();
+
+        await this.userRepository.create(user);
       } else {
         throw new Error("Email and Password didn't match");
       }
