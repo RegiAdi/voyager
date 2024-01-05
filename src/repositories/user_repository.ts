@@ -29,4 +29,26 @@ export class UserRepository extends BaseRepository<User> {
       throw new Error('Failed to get user count');
     }
   }
+
+  async find(user: User): Promise<User> {
+    try {
+      const registeredUser = await this.collection.findOne<User>({
+        email: user.email,
+      });
+
+      if (registeredUser === null) {
+        throw new Error('User not found');
+      }
+
+      return registeredUser;
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        throw new Error(`${error.message}`);
+      } else {
+        throw new Error('An error occured');
+      }
+    }
+  }
 }

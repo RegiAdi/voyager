@@ -1,6 +1,6 @@
 import * as SecurePassword from 'secure-password';
 
-type SecurePasswordStatus =
+export type PasswordStatus =
   | 'INVALID_UNRECOGNIZED_HASH'
   | 'INVALID'
   | 'VALID'
@@ -23,7 +23,7 @@ export class Password {
   async verify(
     password: string,
     passwordHash: string
-  ): Promise<SecurePasswordStatus> {
+  ): Promise<PasswordStatus> {
     const passwordHashBuffer = Buffer.alloc(SecurePassword.HASH_BYTES);
     passwordHashBuffer.write(passwordHash);
 

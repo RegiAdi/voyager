@@ -4,6 +4,7 @@ import {BaseHandler} from './base_handler';
 
 interface AuthService {
   register(user: User): Promise<User>;
+  login(user: User): Promise<User>;
 }
 
 export class AuthHandler extends BaseHandler {
@@ -31,7 +32,7 @@ export class AuthHandler extends BaseHandler {
           statusCode: 500,
           status: 'error',
           message: error.message,
-          data: {},
+          data: null,
         };
       }
     }
@@ -40,15 +41,29 @@ export class AuthHandler extends BaseHandler {
   }
 
   async login(req: Request, res: Response): Promise<void> {
-    this.payload = {
-      statusCode: 200,
-      status: 'success',
-      message: 'User authenticated sucessfully',
-      data: {
-        id: 1,
-        email: 'user@demo.com',
-      },
-    };
+    const request = req.body;
+
+    try {
+      const user = await this.authService.login(request);
+
+      this.payload = {
+        statusCode: 201,
+        status: 'success',
+        message: 'User authenticated sucessfully',
+        data: user,
+      };
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        this.payload = {
+          statusCode: 500,
+          status: 'error',
+          message: error.message,
+          data: null,
+        };
+      }
+    }
 
     this.send(res, this.payload);
   }
