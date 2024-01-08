@@ -37,26 +37,19 @@ export class Password {
         console.error(
           'This hash was not made with secure-password. Attempt legacy algorithm'
         );
+
         return 'INVALID_UNRECOGNIZED_HASH';
       case SecurePassword.INVALID:
         console.log('Invalid password');
+
         return 'INVALID';
       case SecurePassword.VALID:
         console.log('Authenticated');
+
         return 'VALID';
       case SecurePassword.VALID_NEEDS_REHASH:
         console.log('Yay you made it, wait for us to improve your safety');
 
-        try {
-          const improvedHash = await this.securePassword.hash(
-            Buffer.from(password)
-          );
-          // Save improvedHash somewhere
-        } catch (err) {
-          console.error(
-            'You are authenticated, but we could not improve your safety this time around'
-          );
-        }
         return 'VALID_NEEDS_REHASH';
     }
   }

@@ -57,9 +57,7 @@ export class UserRepository extends BaseRepository<User> {
       await this.collection.updateOne(
         {email: user.email},
         {
-          $set: {
-            apiToken: user.apiToken,
-          },
+          $set: user,
         }
       );
     } catch (error) {

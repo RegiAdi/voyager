@@ -70,24 +70,27 @@ export class AuthService {
         registeredUser.password!
       );
 
+      if (
+        passwordStatus === 'INVALID' ||
+        passwordStatus === 'INVALID_UNRECOGNIZED_HASH'
+      ) {
+        throw new Error("Email and Password didn't match");
+      }
+
       registeredUser.apiToken = await this.apiToken.generate();
       registeredUser.updatedAt = new Date();
 
-      if (passwordStatus === 'VALID') {
-        await this.userRepository.update(registeredUser);
+      let improvedHash: string;
 
-        return registeredUser!;
-      } else if (passwordStatus === 'VALID_NEEDS_REHASH') {
-        const improvedHash = await this.password.hash(registeredUser.password);
+      if (passwordStatus === 'VALID_NEEDS_REHASH') {
+        improvedHash = await this.password.hash(registeredUser.password);
 
         registeredUser.password = improvedHash;
-
-        await this.userRepository.update(registeredUser);
-
-        return registeredUser!;
-      } else {
-        throw new Error("Email and Password didn't match");
       }
+
+      await this.userRepository.update(registeredUser);
+
+      return registeredUser!;
     } catch (error) {
       console.error(error);
 
