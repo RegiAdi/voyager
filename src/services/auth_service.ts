@@ -70,19 +70,19 @@ export class AuthService {
         registeredUser.password!
       );
 
-      user.apiToken = await this.apiToken.generate();
+      registeredUser.apiToken = await this.apiToken.generate();
 
       if (passwordStatus === 'VALID') {
-        await this.userRepository.update(user);
+        await this.userRepository.update(registeredUser);
 
         return registeredUser!;
       } else if (passwordStatus === 'VALID_NEEDS_REHASH') {
-        const improvedHash = await this.password.hash(user.password);
+        const improvedHash = await this.password.hash(registeredUser.password);
 
-        user.password = improvedHash;
-        user.updatedAt = new Date();
+        registeredUser.password = improvedHash;
+        registeredUser.updatedAt = new Date();
 
-        await this.userRepository.update(user);
+        await this.userRepository.update(registeredUser);
 
         return registeredUser!;
       } else {
