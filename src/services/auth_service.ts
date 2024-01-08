@@ -5,6 +5,7 @@ interface UserRepository {
   create(user: User): Promise<string>;
   count(user: User): Promise<number>;
   find(user: User): Promise<User>;
+  update(user: User): Promise<void>;
 }
 
 interface Password {
@@ -12,10 +13,15 @@ interface Password {
   verify(password: string, passwordHash: string): Promise<PasswordStatus>;
 }
 
+interface ApiToken {
+  generate(): Promise<string>;
+}
+
 export class AuthService {
   constructor(
     private userRepository: UserRepository,
-    private password: Password
+    private password: Password,
+    private apiToken: ApiToken
   ) {}
 
   async register(user: User): Promise<User> {
@@ -64,7 +70,11 @@ export class AuthService {
         registeredUser.password!
       );
 
+      user.apiToken = await this.apiToken.generate();
+
       if (passwordStatus === 'VALID') {
+        await this.userRepository.update(user);
+
         return registeredUser!;
       } else if (passwordStatus === 'VALID_NEEDS_REHASH') {
         const improvedHash = await this.password.hash(user.password);
@@ -72,7 +82,7 @@ export class AuthService {
         user.password = improvedHash;
         user.updatedAt = new Date();
 
-        await this.userRepository.create(user);
+        await this.userRepository.update(user);
 
         return registeredUser!;
       } else {

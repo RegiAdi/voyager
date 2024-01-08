@@ -51,4 +51,21 @@ export class UserRepository extends BaseRepository<User> {
       }
     }
   }
+
+  async update(user: User): Promise<void> {
+    try {
+      await this.collection.updateOne(
+        {email: user.email},
+        {
+          $set: {
+            apiToken: user.apiToken,
+          },
+        }
+      );
+    } catch (error) {
+      console.error(error);
+
+      throw new Error('Failed to update a user');
+    }
+  }
 }
