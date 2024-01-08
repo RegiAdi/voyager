@@ -71,6 +71,7 @@ export class AuthService {
       );
 
       registeredUser.apiToken = await this.apiToken.generate();
+      registeredUser.updatedAt = new Date();
 
       if (passwordStatus === 'VALID') {
         await this.userRepository.update(registeredUser);
@@ -80,7 +81,6 @@ export class AuthService {
         const improvedHash = await this.password.hash(registeredUser.password);
 
         registeredUser.password = improvedHash;
-        registeredUser.updatedAt = new Date();
 
         await this.userRepository.update(registeredUser);
 
