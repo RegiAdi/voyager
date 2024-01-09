@@ -41,8 +41,8 @@ export class Kernel {
     private userHandler: UserHandler
   ) {}
 
-  boot() {
-    this.db.connect();
+  async boot() {
+    await this.db.connect();
 
     this.server.mountGlobalMiddleware();
 

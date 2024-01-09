@@ -39,4 +39,6 @@ const kernel = new Kernel(
   userHandler
 );
 
-kernel.boot();
+(async () => {
+  await kernel.boot();
+})();
