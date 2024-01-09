@@ -16,6 +16,7 @@ interface Password {
 
 interface ApiToken {
   generate(): Promise<string>;
+  generateExpirationTime(): Promise<Date>;
 }
 
 export class AuthService {
@@ -79,6 +80,8 @@ export class AuthService {
       }
 
       registeredUser.apiToken = await this.apiToken.generate();
+      registeredUser.tokenExpiresAt =
+        await this.apiToken.generateExpirationTime();
       registeredUser.updatedAt = new Date();
 
       let improvedHash: string;

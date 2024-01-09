@@ -16,7 +16,7 @@ const config = new Config();
 const server = new Server();
 const db = new Database(config);
 const password = new Password();
-const apiToken = new ApiToken();
+const apiToken = new ApiToken(config);
 
 const userRepository = new UserRepository(db);
 

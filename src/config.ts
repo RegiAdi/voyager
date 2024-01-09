@@ -16,4 +16,14 @@ export class Config {
   getBaseUrlPath(): string {
     return '/api/v1';
   }
+
+  getApiTokenDuration(): number {
+    const duration = process.env.APITOKEN_DURATION_DAYS;
+
+    if (duration !== undefined) {
+      return parseInt(duration);
+    }
+
+    return 60;
+  }
 }
