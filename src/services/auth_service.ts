@@ -6,6 +6,7 @@ interface UserRepository {
   count(user: User): Promise<number>;
   find(user: User): Promise<User>;
   update(user: User): Promise<void>;
+  logout(apiToken: string): Promise<boolean>;
 }
 
 interface Password {
@@ -91,6 +92,26 @@ export class AuthService {
       await this.userRepository.update(registeredUser);
 
       return registeredUser!;
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        throw new Error(`${error.message}`);
+      } else {
+        throw new Error('An error occured');
+      }
+    }
+  }
+
+  async logout(apiToken: string): Promise<boolean> {
+    try {
+      const loggedOutUser = await this.userRepository.logout(apiToken);
+
+      if (loggedOutUser) {
+        return loggedOutUser;
+      }
+
+      return false;
     } catch (error) {
       console.error(error);
 

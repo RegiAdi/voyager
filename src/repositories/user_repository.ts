@@ -66,4 +66,25 @@ export class UserRepository extends BaseRepository<User> {
       throw new Error('Failed to update a user');
     }
   }
+
+  async logout(apiToken: string): Promise<boolean> {
+    try {
+      const result = await this.collection.updateOne(
+        {apiToken: apiToken},
+        {
+          $set: {
+            apiToken: '',
+          },
+        }
+      );
+
+      if (result.modifiedCount) {
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      throw new Error('Failed to delete user session');
+    }
+  }
 }

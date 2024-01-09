@@ -5,6 +5,7 @@ import {BaseHandler} from './base_handler';
 interface AuthService {
   register(user: User): Promise<User>;
   login(user: User): Promise<User>;
+  logout(apiToken: string): Promise<boolean>;
 }
 
 export class AuthHandler extends BaseHandler {
@@ -69,12 +70,38 @@ export class AuthHandler extends BaseHandler {
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    this.payload = {
-      statusCode: 200,
-      status: 'success',
-      message: 'User logged out sucessfully',
-      data: null,
-    };
+    const apiToken = req.get('Authorization');
+
+    try {
+      const loggedOutUser = await this.authService.logout(apiToken!);
+
+      if (loggedOutUser) {
+        this.payload = {
+          statusCode: 200,
+          status: 'success',
+          message: 'User logged out sucessfully',
+          data: null,
+        };
+      } else {
+        this.payload = {
+          statusCode: 500,
+          status: 'error',
+          message: "Session doesn't exist",
+          data: null,
+        };
+      }
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        this.payload = {
+          statusCode: 500,
+          status: 'error',
+          message: error.message,
+          data: null,
+        };
+      }
+    }
 
     this.send(res, this.payload);
   }
