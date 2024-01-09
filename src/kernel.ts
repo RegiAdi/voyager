@@ -10,7 +10,7 @@ interface Server {
   guestRouter: Router;
   authRouter: Router;
   mountGlobalMiddleware(): void;
-  listen(port: string): void;
+  listen(port: string): Promise<void>;
 }
 
 interface Database {
@@ -46,38 +46,47 @@ export class Kernel {
 
     this.server.mountGlobalMiddleware();
 
-    this.server.guestRouter.post('/register', (req: Request, res: Response) => {
-      this.authHandler.register(req, res);
-    });
+    this.server.guestRouter.post(
+      '/register',
+      async (req: Request, res: Response) => {
+        await this.authHandler.register(req, res);
+      }
+    );
 
-    this.server.guestRouter.post('/login', (req: Request, res: Response) => {
-      this.authHandler.login(req, res);
-    });
+    this.server.guestRouter.post(
+      '/login',
+      async (req: Request, res: Response) => {
+        await this.authHandler.login(req, res);
+      }
+    );
 
     this.server.guestRouter.use(
-      (req: Request, res: Response, next: NextFunction) => {
+      async (req: Request, res: Response, next: NextFunction) => {
         console.log('Guest');
         next();
       }
     );
 
     this.server.authRouter.use(
-      (req: Request, res: Response, next: NextFunction) => {
-        this.authMiddleware.mount(req, res, next);
+      async (req: Request, res: Response, next: NextFunction) => {
+        await this.authMiddleware.mount(req, res, next);
       }
     );
 
-    this.server.authRouter.get('/me', (req: Request, res: Response) => {
-      this.userHandler.getOneUser(req, res);
+    this.server.authRouter.get('/me', async (req: Request, res: Response) => {
+      await this.userHandler.getOneUser(req, res);
     });
 
-    this.server.authRouter.get('/logout', (req: Request, res: Response) => {
-      this.authHandler.logout(req, res);
-    });
+    this.server.authRouter.get(
+      '/logout',
+      async (req: Request, res: Response) => {
+        await this.authHandler.logout(req, res);
+      }
+    );
 
     this.server.http.use(this.config.getBaseUrlPath(), this.server.guestRouter);
     this.server.http.use(this.config.getBaseUrlPath(), this.server.authRouter);
 
-    this.server.listen(this.config.getAppPort());
+    await this.server.listen(this.config.getAppPort());
   }
 }

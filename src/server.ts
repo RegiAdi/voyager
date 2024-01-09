@@ -19,7 +19,7 @@ export class Server {
     this.http.use(express.urlencoded({extended: true}));
   }
 
-  listen(port: string): void {
+  async listen(port: string): Promise<void> {
     this.http.listen(port, () => {
       console.log(`[server]: Server is running at http://localhost:${port}`);
     });
