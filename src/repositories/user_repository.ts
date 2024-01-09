@@ -87,4 +87,24 @@ export class UserRepository extends BaseRepository<User> {
       throw new Error('Failed to delete user session');
     }
   }
+
+  async getAuthenticatedUser(apiToken: string): Promise<User> {
+    try {
+      const user = await this.collection.findOne<User>({apiToken: apiToken});
+
+      if (user === null) {
+        throw new Error('User not found');
+      }
+
+      return user;
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        throw new Error(`${error.message}`);
+      } else {
+        throw new Error('An error occured');
+      }
+    }
+  }
 }

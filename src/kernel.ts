@@ -17,6 +17,10 @@ interface Database {
   connect(): Promise<void>;
 }
 
+interface AuthMiddleware {
+  mount(req: Request, res: Response, next: NextFunction): Promise<void>;
+}
+
 interface AuthHandler {
   register(req: Request, res: Response): Promise<void>;
   login(req: Request, res: Response): Promise<void>;
@@ -32,6 +36,7 @@ export class Kernel {
     private config: Config,
     private server: Server,
     private db: Database,
+    private authMiddleware: AuthMiddleware,
     private authHandler: AuthHandler,
     private userHandler: UserHandler
   ) {}
@@ -56,16 +61,19 @@ export class Kernel {
       }
     );
 
+    this.server.authRouter.use(
+      (req: Request, res: Response, next: NextFunction) => {
+        this.authMiddleware.mount(req, res, next);
+      }
+    );
+
+    this.server.authRouter.get('/me', (req: Request, res: Response) => {
+      this.userHandler.getOneUser(req, res);
+    });
+
     this.server.authRouter.get('/logout', (req: Request, res: Response) => {
       this.authHandler.logout(req, res);
     });
-
-    this.server.authRouter.use(
-      (req: Request, res: Response, next: NextFunction) => {
-        console.log('Authenticated');
-        next();
-      }
-    );
 
     this.server.http.use(this.config.getBaseUrlPath(), this.server.guestRouter);
     this.server.http.use(this.config.getBaseUrlPath(), this.server.authRouter);

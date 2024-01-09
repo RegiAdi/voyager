@@ -5,7 +5,9 @@ interface Config {
 }
 
 interface Time {
+  now(): Date;
   addDays(date: Date, amount: number): Date;
+  isAfter(date: Date, dateToCompare: Date): boolean;
 }
 
 export class ApiToken {
@@ -40,5 +42,9 @@ export class ApiToken {
 
   async generateExpirationTime(): Promise<Date> {
     return this.time.addDays(new Date(), this.config.getApiTokenDuration());
+  }
+
+  async isExpired(expirationTime: Date): Promise<boolean> {
+    return !this.time.isAfter(expirationTime, this.time.now());
   }
 }
