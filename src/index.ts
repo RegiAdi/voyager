@@ -11,12 +11,14 @@ import {AuthHandler} from './handlers/auth_handler';
 import {UserHandler} from './handlers/user_handler';
 
 import {UserRepository} from './repositories/user_repository';
+import {Time} from './time';
 
 const config = new Config();
 const server = new Server();
 const db = new Database(config);
 const password = new Password();
-const apiToken = new ApiToken(config);
+const time = new Time();
+const apiToken = new ApiToken(config, time);
 
 const userRepository = new UserRepository(db);
 

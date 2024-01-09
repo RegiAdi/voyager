@@ -1,12 +1,18 @@
 import {randomBytes} from 'crypto';
-import {addDays} from 'date-fns';
 
 interface Config {
   getApiTokenDuration(): number;
 }
 
+interface Time {
+  addDays(date: Date, amount: number): Date;
+}
+
 export class ApiToken {
-  constructor(private config: Config) {}
+  constructor(
+    private config: Config,
+    private time: Time
+  ) {}
 
   private generateRandomByte(length: number): Promise<Buffer> {
     return new Promise((resolve, reject) => {
@@ -33,6 +39,6 @@ export class ApiToken {
   }
 
   async generateExpirationTime(): Promise<Date> {
-    return addDays(new Date(), this.config.getApiTokenDuration());
+    return this.time.addDays(new Date(), this.config.getApiTokenDuration());
   }
 }
