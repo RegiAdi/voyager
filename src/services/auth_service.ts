@@ -19,11 +19,16 @@ interface ApiToken {
   generateExpirationTime(): Promise<Date>;
 }
 
+interface Time {
+  now(): Date;
+}
+
 export class AuthService {
   constructor(
     private userRepository: UserRepository,
     private password: Password,
-    private apiToken: ApiToken
+    private apiToken: ApiToken,
+    private time: Time
   ) {}
 
   async register(user: User): Promise<User> {
@@ -36,8 +41,8 @@ export class AuthService {
         const hashedPassword = await this.password.hash(user.password);
 
         user.password = hashedPassword;
-        user.createdAt = new Date();
-        user.updatedAt = new Date();
+        user.createdAt = this.time.now();
+        user.updatedAt = this.time.now();
 
         const userId = await this.userRepository.create(user);
 
@@ -82,7 +87,7 @@ export class AuthService {
       registeredUser.apiToken = await this.apiToken.generate();
       registeredUser.tokenExpiresAt =
         await this.apiToken.generateExpirationTime();
-      registeredUser.updatedAt = new Date();
+      registeredUser.updatedAt = this.time.now();
 
       let improvedHash: string;
 

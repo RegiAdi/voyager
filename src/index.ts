@@ -22,7 +22,7 @@ const apiToken = new ApiToken(config, time);
 
 const userRepository = new UserRepository(db);
 
-const authService = new AuthService(userRepository, password, apiToken);
+const authService = new AuthService(userRepository, password, apiToken, time);
 
 const authHandler = new AuthHandler(authService);
 const userHandler = new UserHandler();
