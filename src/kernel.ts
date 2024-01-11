@@ -17,6 +17,10 @@ interface Database {
   connect(): Promise<void>;
 }
 
+interface Cache {
+  connect(): Promise<void>;
+}
+
 interface AuthMiddleware {
   mount(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
@@ -36,6 +40,7 @@ export class Kernel {
     private config: Config,
     private server: Server,
     private db: Database,
+    private cache: Cache,
     private authMiddleware: AuthMiddleware,
     private authHandler: AuthHandler,
     private userHandler: UserHandler
@@ -43,6 +48,7 @@ export class Kernel {
 
   async boot() {
     await this.db.connect();
+    await this.cache.connect();
 
     this.server.mountGlobalMiddleware();
 

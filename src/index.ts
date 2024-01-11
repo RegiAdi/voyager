@@ -1,6 +1,7 @@
 import {Kernel} from './kernel';
 import {Server} from './server';
 import {Database} from './database';
+import {Cache} from './cache';
 import {Password} from './password';
 import {ApiToken} from './apitoken';
 import {Config} from './config';
@@ -17,6 +18,7 @@ import {AuthMiddleware} from './middleware/auth_middleware';
 const config = new Config();
 const server = new Server();
 const db = new Database(config);
+const cache = new Cache();
 const password = new Password();
 const time = new Time();
 const apiToken = new ApiToken(config, time);
@@ -34,6 +36,7 @@ const kernel = new Kernel(
   config,
   server,
   db,
+  cache,
   authMiddleware,
   authHandler,
   userHandler
