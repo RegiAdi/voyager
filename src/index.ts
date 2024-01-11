@@ -18,7 +18,7 @@ import {AuthMiddleware} from './middleware/auth_middleware';
 const config = new Config();
 const server = new Server();
 const db = new Database(config);
-const cache = new Cache();
+const cache = new Cache(config);
 const password = new Password();
 const time = new Time();
 const apiToken = new ApiToken(config, time);

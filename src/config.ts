@@ -26,4 +26,18 @@ export class Config {
 
     return 60;
   }
+
+  getRedisHost(): string {
+    return process.env.REDIS_HOST || 'redis';
+  }
+
+  getRedisPort(): number {
+    const redisPort = process.env.REDIS_PORT;
+
+    if (redisPort !== undefined) {
+      return parseInt(redisPort);
+    }
+
+    return 6379;
+  }
 }

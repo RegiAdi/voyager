@@ -1,10 +1,20 @@
 import {createClient, RedisClientType} from 'redis';
 
+interface Config {
+  getRedisHost(): string;
+  getRedisPort(): number;
+}
+
 export class Cache {
   client: RedisClientType;
 
-  constructor() {
-    this.client = createClient();
+  constructor(private config: Config) {
+    this.client = createClient({
+      socket: {
+        port: this.config.getRedisPort(),
+        host: this.config.getRedisHost(),
+      },
+    });
   }
 
   async connect(): Promise<void> {
