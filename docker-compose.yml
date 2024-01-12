@@ -9,13 +9,17 @@ services:
       - cache:/data
 
   app:
-    build: ./
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "4000:4000"
     depends_on:
       - redis
-    environment:
-      - REDIS_HOST=redis
+    # environment:
+    #   - REDIS_HOST=redis
+    volumes: 
+      - ./:/home/node/app
 
 volumes:
   cache:

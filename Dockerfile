@@ -1,10 +1,7 @@
-FROM node:20-bookworm
+FROM node:20-bookworm as base
 
-WORKDIR /app
+WORKDIR /home/node/app
 
-COPY . .
+COPY package.json package-lock.json ./
 RUN npm install
-RUN npm run compile
-CMD ["node", "build/src/index.js"]
-
-EXPOSE 4000
+CMD npm run watch
