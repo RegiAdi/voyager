@@ -1,13 +1,4 @@
 services:
-  redis:
-    image: redis:6.2-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    volumes: 
-      - cache:/data
-
   app:
     build:
       context: .
@@ -16,10 +7,25 @@ services:
       - "4000:4000"
     depends_on:
       - redis
-    # environment:
-    #   - REDIS_HOST=redis
     volumes: 
       - ./:/home/node/app
+
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongo:/data/db
+    ports:
+      - '27017:27017'
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes: 
+      - cache:/data
 
 volumes:
   cache:
