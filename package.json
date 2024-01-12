@@ -16,7 +16,8 @@
     "compile": "tsc",
     "fix": "gts fix",
     "dev": "ts-node src/index.ts",
-    "watch": "nodemon src/index.ts"
+    "watch": "nodemon src/index.ts",
+    "start": "node build/src/index.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
