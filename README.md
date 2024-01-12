@@ -45,3 +45,17 @@ Compiles the source code using TypeScript compiler:
 ```shell
 npm run compile
 ```
+
+# Using Docker
+
+Setup local development environment using Docker:
+
+```shell
+docker compose up -d --build
+```
+
+or using 'make':
+
+```shell
+make run
+```
