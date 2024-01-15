@@ -98,6 +98,12 @@ export class UserRepository extends BaseRepository<User> {
           JSON.stringify(updatedUser)
         );
 
+        await this.cacheClient.setEx(
+          `user_sessions_${updatedUser.apiToken}`,
+          3600,
+          JSON.stringify(updatedUser)
+        );
+
         return updatedUser!;
       } else {
         throw new Error('Failed to update user data');
@@ -132,6 +138,16 @@ export class UserRepository extends BaseRepository<User> {
 
   async getAuthenticatedUser(apiToken: string): Promise<User> {
     try {
+      const userSession = await this.cacheClient.get(
+        `user_sessions_${apiToken}`
+      );
+
+      console.log(`userSession: ${userSession}`);
+
+      if (userSession !== null) {
+        return JSON.parse(userSession);
+      }
+
       const user = await this.collection.findOne<User>({apiToken: apiToken});
 
       if (user === null) {
