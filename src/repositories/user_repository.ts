@@ -18,12 +18,13 @@ export class UserRepository extends BaseRepository<User> {
           _id: result.insertedId,
         });
 
-        if (user !== null) {
+        if (createdUser !== null) {
           await this.cacheClient.setEx(
-            `users_${user._id}`,
+            `users_${createdUser.email}`,
             3600,
-            JSON.stringify(user)
+            JSON.stringify(createdUser)
           );
+
           return createdUser!;
         } else {
           throw new Error('Failed to create a new user');
@@ -52,6 +53,12 @@ export class UserRepository extends BaseRepository<User> {
 
   async find(user: User): Promise<User> {
     try {
+      const cachedUser = await this.cacheClient.get(`users_${user.email}`);
+
+      if (cachedUser !== null) {
+        return JSON.parse(cachedUser);
+      }
+
       const registeredUser = await this.collection.findOne<User>({
         email: user.email,
       });
@@ -72,14 +79,29 @@ export class UserRepository extends BaseRepository<User> {
     }
   }
 
-  async update(user: User): Promise<void> {
+  async update(user: User): Promise<User> {
     try {
-      await this.collection.updateOne(
+      const updatedUser = await this.collection.findOneAndUpdate(
         {email: user.email},
         {
           $set: user,
+        },
+        {
+          returnDocument: 'after',
         }
       );
+
+      if (updatedUser !== null) {
+        await this.cacheClient.setEx(
+          `users_${updatedUser.email}`,
+          3600,
+          JSON.stringify(updatedUser)
+        );
+
+        return updatedUser!;
+      } else {
+        throw new Error('Failed to update user data');
+      }
     } catch (error) {
       console.error(error);
 

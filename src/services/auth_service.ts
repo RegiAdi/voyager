@@ -5,7 +5,7 @@ interface UserRepository {
   create(user: User): Promise<User>;
   count(user: User): Promise<number>;
   find(user: User): Promise<User>;
-  update(user: User): Promise<void>;
+  update(user: User): Promise<User>;
   logout(apiToken: string): Promise<boolean>;
 }
 
@@ -86,17 +86,23 @@ export class AuthService {
         await this.apiToken.generateExpirationTime();
       registeredUser.updatedAt = this.time.now();
 
-      let improvedHash: string;
+      let passwordHash: string;
 
       if (passwordStatus === 'VALID_NEEDS_REHASH') {
-        improvedHash = await this.password.hash(registeredUser.password);
+        passwordHash = await this.password.hash(registeredUser.password);
 
-        registeredUser.password = improvedHash;
+        registeredUser.password = passwordHash;
       }
 
-      await this.userRepository.update(registeredUser);
+      const updatedUser = await this.userRepository.update({
+        email: registeredUser.email,
+        password: registeredUser.password,
+        apiToken: registeredUser.apiToken,
+        tokenExpiresAt: registeredUser.tokenExpiresAt,
+        updatedAt: registeredUser.updatedAt,
+      });
 
-      return registeredUser!;
+      return updatedUser;
     } catch (error) {
       console.error(error);
 
