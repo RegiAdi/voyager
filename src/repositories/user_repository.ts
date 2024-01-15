@@ -117,16 +117,22 @@ export class UserRepository extends BaseRepository<User> {
 
   async logout(apiToken: string): Promise<boolean> {
     try {
-      const result = await this.collection.updateOne(
+      const updatedUser = await this.collection.findOneAndUpdate(
         {apiToken: apiToken},
         {
           $set: {
             apiToken: '',
           },
+        },
+        {
+          returnDocument: 'after',
         }
       );
 
-      if (result.modifiedCount) {
+      if (updatedUser !== null) {
+        await this.cacheClient.del(`users_${updatedUser.email}`);
+        await this.cacheClient.del(`user_sessions_${apiToken}`);
+
         return true;
       }
 
