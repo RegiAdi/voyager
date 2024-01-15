@@ -2,7 +2,7 @@ import {User} from '../models/user';
 import {PasswordStatus} from '../password';
 
 interface UserRepository {
-  create(user: User): Promise<string>;
+  create(user: User): Promise<User>;
   count(user: User): Promise<number>;
   find(user: User): Promise<User>;
   update(user: User): Promise<void>;
@@ -44,12 +44,9 @@ export class AuthService {
         user.createdAt = this.time.now();
         user.updatedAt = this.time.now();
 
-        const userId = await this.userRepository.create(user);
+        const createdUser = await this.userRepository.create(user);
 
-        return {
-          id: userId,
-          password: user.password,
-        };
+        return createdUser;
       } else {
         throw new Error('Email already exist.');
       }

@@ -23,7 +23,7 @@ const password = new Password();
 const time = new Time();
 const apiToken = new ApiToken(config, time);
 
-const userRepository = new UserRepository(db);
+const userRepository = new UserRepository(db, cache);
 
 const authMiddleware = new AuthMiddleware(userRepository, apiToken);
 

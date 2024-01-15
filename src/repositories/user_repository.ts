@@ -1,16 +1,36 @@
-import {BaseRepository, Database} from './base_repository';
+import {BaseRepository, Database, Cache} from './base_repository';
 import {User} from '../models/user';
 
 export class UserRepository extends BaseRepository<User> {
-  constructor(protected db: Database) {
-    super(db, 'users');
+  constructor(
+    protected db: Database,
+    protected cache: Cache
+  ) {
+    super(db, 'users', cache);
   }
 
-  async create(user: User): Promise<string> {
+  async create(user: User): Promise<User> {
     try {
       const result = await this.collection.insertOne(user);
 
-      return result.insertedId?.toString();
+      if (result.insertedId) {
+        const createdUser = await this.collection.findOne<User>({
+          _id: result.insertedId,
+        });
+
+        if (user !== null) {
+          await this.cacheClient.setEx(
+            `users_${user._id}`,
+            3600,
+            JSON.stringify(user)
+          );
+          return createdUser!;
+        } else {
+          throw new Error('Failed to create a new user');
+        }
+      } else {
+        throw new Error('Failed to create a new user');
+      }
     } catch (error) {
       console.error(error);
 
